@@ -1,0 +1,299 @@
+<!DOCTYPE html>
+<html lang="ar">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>لوحة التحكم</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background-color: #121212;
+            color: white;
+        }
+        h1 {
+            text-align: center;
+            color: #007bff;
+        }
+        form {
+            max-width: 400px;
+            margin: 20px auto;
+            padding: 20px;
+            background-color: #1f1f1f;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.5);
+        }
+        input, button {
+            width: 100%;
+            margin: 10px 0;
+            padding: 10px;
+            border: none;
+            border-radius: 5px;
+            background-color: #333;
+            color: white;
+        }
+        button {
+            background-color: #007bff;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+        .logo-preview {
+            text-align: center;
+            margin: 20px auto;
+        }
+        .logo-preview img {
+            max-width: 100px;
+            max-height: 100px;
+            border-radius: 8px;
+            margin-top: 10px;
+        }
+    </style>
+</head>
+<body>
+    <h1>لوحة التحكم</h1>
+    <form>
+        <label>اسم المكان:</label>
+        <input type="text" id="restaurant-name" placeholder="اسم المكان">
+
+        <label>العنوان:</label>
+        <input type="text" id="restaurant-address" placeholder="العنوان">
+
+        <label>رقم الهاتف:</label>
+        <input type="text" id="restaurant-phone" placeholder="رقم الهاتف">
+
+        <label>لوجو المكان:</label>
+        <input type="file" id="restaurant-logo" accept="image/*">
+
+        <div class="logo-preview">
+            <p>معاينة اللوجو:</p>
+            <img id="logo-preview" src="" alt="لوجو المكان">
+        </div>
+
+        <button type="button" onclick="saveData()">حفظ البيانات</button>
+    </form>
+
+    <script>
+        // التحقق من تسجيل الدخول
+        if (!localStorage.getItem("isLoggedIn")) {
+            alert("يجب تسجيل الدخول أولاً!");
+            window.location.href = "login.html"; // العودة إلى صفحة تسجيل الدخول
+        }
+
+        // تحميل البيانات المحفوظة
+        document.getElementById("restaurant-name").value = localStorage.getItem("restaurantName") || "";
+        document.getElementById("restaurant-address").value = localStorage.getItem("restaurantAddress") || "";
+        document.getElementById("restaurant-phone").value = localStorage.getItem("restaurantPhone") || "";
+
+        const savedLogo = localStorage.getItem("restaurantLogo");
+        if (savedLogo) {
+            document.getElementById("logo-preview").src = savedLogo;
+        }
+
+        // حفظ البيانات
+        function saveData() {
+            const name = document.getElementById("restaurant-name").value;
+            const address = document.getElementById("restaurant-address").value;
+            const phone = document.getElementById("restaurant-phone").value;
+            const logoFile = document.getElementById("restaurant-logo").files[0];
+
+            if (logoFile) {
+                const reader = new FileReader();
+                reader.onload = function () {
+                    localStorage.setItem("restaurantLogo", reader.result);
+                    document.getElementById("logo-preview").src = reader.result; // تحديث معاينة اللوجو
+                };
+                reader.readAsDataURL(logoFile);
+            }
+
+            localStorage.setItem("restaurantName", name);
+            localStorage.setItem("restaurantAddress", address);
+            localStorage.setItem("restaurantPhone", phone);
+
+            alert("تم حفظ البيانات بنجاح!");
+        }
+    </script>
+  <!DOCTYPE html>
+<html lang="ar">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>لوحة التحكم - إدارة الأقسام</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background-color: #121212;
+            color: white;
+        }
+        h1 {
+            text-align: center;
+            color: #007bff;
+        }
+        form {
+            max-width: 400px;
+            margin: 20px auto;
+            padding: 20px;
+            background-color: #1f1f1f;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.5);
+        }
+        input, select, button {
+            width: 100%;
+            margin: 10px 0;
+            padding: 10px;
+            border: none;
+            border-radius: 5px;
+            background-color: #333;
+            color: white;
+        }
+        button {
+            background-color: #007bff;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+        .section, .item {
+            background-color: #1f1f1f;
+            padding: 15px;
+            border-radius: 8px;
+            margin-top: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.5);
+        }
+        .section-title {
+            font-size: 18px;
+            margin-bottom: 10px;
+        }
+        .item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .item button {
+            margin-left: 10px;
+            background-color: #ff4d4d;
+        }
+        .item button:hover {
+            background-color: #ff1a1a;
+        }
+    </style>
+</head>
+<body>
+    <h1>لوحة التحكم - إدارة الأقسام</h1>
+
+    <!-- إضافة قسم -->
+    <form id="section-form">
+        <label>اسم القسم:</label>
+        <input type="text" id="section-name" placeholder="اسم القسم" required>
+        <button type="button" onclick="addSection()">إضافة قسم</button>
+    </form>
+
+    <!-- إضافة صنف -->
+    <form id="item-form">
+        <label>اختر القسم:</label>
+        <select id="section-select">
+            <option value="" disabled selected>اختر القسم</option>
+        </select>
+        <label>اسم الصنف:</label>
+        <input type="text" id="item-name" placeholder="اسم الصنف" required>
+        <label>سعر الصنف:</label>
+        <input type="number" id="item-price" placeholder="سعر الصنف" required>
+        <label>صورة الصنف:</label>
+        <input type="file" id="item-image" accept="image/*" required>
+        <button type="button" onclick="addItem()">إضافة صنف</button>
+    </form>
+
+    <!-- عرض الأقسام -->
+    <div id="sections-container"></div>
+
+    <script>
+        const sections = JSON.parse(localStorage.getItem("sections")) || [];
+
+        // إضافة قسم جديد
+        function addSection() {
+            const sectionName = document.getElementById("section-name").value;
+            if (sectionName) {
+                sections.push({ name: sectionName, items: [] });
+                localStorage.setItem("sections", JSON.stringify(sections));
+                renderSections();
+                document.getElementById("section-name").value = "";
+                updateSectionSelect();
+            }
+        }
+
+        // تحديث قائمة الأقسام في قائمة اختيار الصنف
+        function updateSectionSelect() {
+            const sectionSelect = document.getElementById("section-select");
+            sectionSelect.innerHTML = `<option value="" disabled selected>اختر القسم</option>`;
+            sections.forEach((section, index) => {
+                const option = document.createElement("option");
+                option.value = index;
+                option.textContent = section.name;
+                sectionSelect.appendChild(option);
+            });
+        }
+
+        // إضافة صنف جديد
+        function addItem() {
+            const sectionIndex = document.getElementById("section-select").value;
+            const itemName = document.getElementById("item-name").value;
+            const itemPrice = parseFloat(document.getElementById("item-price").value);
+            const itemImage = document.getElementById("item-image").files[0];
+
+            if (sectionIndex && itemName && itemPrice && itemImage) {
+                const reader = new FileReader();
+                reader.onload = function () {
+                    sections[sectionIndex].items.push({
+                        name: itemName,
+                        price: itemPrice,
+                        image: reader.result,
+                    });
+                    localStorage.setItem("sections", JSON.stringify(sections));
+                    renderSections();
+                    document.getElementById("item-form").reset();
+                };
+                reader.readAsDataURL(itemImage);
+            }
+        }
+
+        // حذف صنف
+        function deleteItem(sectionIndex, itemIndex) {
+            sections[sectionIndex].items.splice(itemIndex, 1);
+            localStorage.setItem("sections", JSON.stringify(sections));
+            renderSections();
+        }
+
+        // عرض الأقسام والصنف
+        function renderSections() {
+            const container = document.getElementById("sections-container");
+            container.innerHTML = "";
+            sections.forEach((section, sectionIndex) => {
+                const sectionDiv = document.createElement("div");
+                sectionDiv.classList.add("section");
+                sectionDiv.innerHTML = `<div class="section-title">${section.name}</div>`;
+                section.items.forEach((item, itemIndex) => {
+                    const itemDiv = document.createElement("div");
+                    itemDiv.classList.add("item");
+                    itemDiv.innerHTML = `
+                        <span>${item.name} - ${item.price} جنيه</span>
+                        <button onclick="deleteItem(${sectionIndex}, ${itemIndex})">حذف</button>
+                    `;
+                    sectionDiv.appendChild(itemDiv);
+                });
+                container.appendChild(sectionDiv);
+            });
+        }
+
+        // تحميل البيانات عند فتح الصفحة
+        renderSections();
+        updateSectionSelect();
+    </script>
+</body>
+</html>
+
+</body>
+</html>
