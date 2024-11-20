@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="ar">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>المنيو</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #121212;
+            color: white;
+            direction: rtl;
+        }
+        h1 {
+            text-align: center;
+            color: #007bff;
+            padding: 10px 0;
+        }
+        .header {
+            background-color: #1f1f1f;
+            padding: 20px;
+            text-align: center;
+            border-bottom: 2px solid #333;
+        }
+        .header img {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+        }
+        .header h2 {
+            margin: 10px 0;
+            color: #00bcd4;
+        }
+        .header p {
+            margin: 5px 0;
+        }
+        .menu-container {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+            padding: 20px;
+        }
+        .section {
+            background-color: #1f1f1f;
+            padding: 15px;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.5);
+        }
+        .section-title {
+            font-size: 20px;
+            margin-bottom: 10px;
+            color: #00bcd4;
+        }
+        .item {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-top: 10px;
+            padding: 10px;
+            background-color: #333;
+            border-radius: 8px;
+        }
+        .item img {
+            width: 50px;
+            height: 50px;
+            border-radius: 8px;
+        }
+        .item-info {
+            flex: 1;
+            margin-right: 10px;
+        }
+        .item-info p {
+            margin: 0;
+        }
+        .item-price {
+            font-weight: bold;
+            color: #fff;
+        }
+    </style>
+</head>
+<body>
+    <!-- معلومات المكان -->
+    <div class="header">
+        <img id="restaurant-logo" src="" alt="لوجو المكان">
+        <h2 id="restaurant-name">اسم المكان</h2>
+        <p id="restaurant-address">العنوان</p>
+        <p id="restaurant-phone">رقم الهاتف</p>
+    </div>
+
+    <!-- المنيو -->
+    <h1>المنيو</h1>
+    <div class="menu-container" id="menu-container">
+        <!-- الأقسام ستظهر هنا ديناميكيًا -->
+    </div>
+
+    <script>
+        const sections = JSON.parse(localStorage.getItem("sections")) || [];
+
+        // تحميل بيانات المكان
+        document.getElementById("restaurant-name").textContent =
+            localStorage.getItem("restaurantName") || "اسم المكان";
+        document.getElementById("restaurant-address").textContent =
+            localStorage.getItem("restaurantAddress") || "العنوان";
+        document.getElementById("restaurant-phone").textContent =
+            localStorage.getItem("restaurantPhone") || "رقم الهاتف";
+        const logo = localStorage.getItem("restaurantLogo");
+        if (logo) {
+            document.getElementById("restaurant-logo").src = logo;
+        }
+
+        // عرض المنيو
+        function renderMenu() {
+            const container = document.getElementById("menu-container");
+            container.innerHTML = "";
+            sections.forEach((section) => {
+                const sectionDiv = document.createElement("div");
+                sectionDiv.classList.add("section");
+                sectionDiv.innerHTML = `<div class="section-title">${section.name}</div>`;
+                section.items.forEach((item) => {
+                    const itemDiv = document.createElement("div");
+                    itemDiv.classList.add("item");
+                    itemDiv.innerHTML = `
+                        <img src="${item.image}" alt="${item.name}">
+                        <div class="item-info">
+                            <p>${item.name}</p>
+                            <p class="item-price">${item.price} جنيه</p>
+                        </div>
+                    `;
+                    sectionDiv.appendChild(itemDiv);
+                });
+                container.appendChild(sectionDiv);
+            });
+        }
+
+        // تحميل المنيو عند فتح الصفحة
+        renderMenu();
+    </script>
+</body>
+</html>
